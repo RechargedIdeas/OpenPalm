@@ -1,0 +1,10 @@
+node_modules
+target
+dist
+*.gguf
+*.safetensors
+.env
+sidecar/.venv
+__pycache__
+*.pyc
+.DS_Store
