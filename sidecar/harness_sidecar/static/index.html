@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agent Harness</title>
+  <style>
+    :root { --bg: #11111b; --surface: #1e1e2e; --border: #313244; --text: #cdd6f4; --muted: #a6adc8; --accent: #89b4fa; --ok: #a6e3a1; --bad: #f38ba8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+    header { height: 48px; background: #181825; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 12px; gap: 12px; }
+    .server { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #585b70; }
+    .dot.on { background: var(--ok); }
+    button { background: var(--border); color: var(--text); border: none; border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+    button.primary { background: var(--accent); color: #11111b; }
+    main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    #messages { flex: 1; overflow: auto; padding: 16px; }
+    footer { border-top: 1px solid var(--border); padding: 12px; display: flex; gap: 8px; }
+    textarea { flex: 1; background: var(--surface); color: var(--text); border: 1px solid #45475a; border-radius: 6px; padding: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Agent Harness</strong>
+    <span style="color:var(--muted);font-size:13px;">CPU-only</span>
+    <div class="server">
+      <span class="dot" id="dot"></span>
+      <span id="srv">checking…</span>
+      <button id="btnStart">Start</button>
+      <button id="btnStop">Stop</button>
+      <button id="btnReset">Reset</button>
+    </div>
+  </header>
+  <main>
+    <div id="messages"></div>
+    <footer>
+      <textarea id="input" rows="2" placeholder="Type a message…"></textarea>
+      <button class="primary" id="send">Send</button>
+    </footer>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    async function refreshStatus() {
+      try {
+        const r = await fetch("/control/status");
+        const s = await r.json();
+        $("dot").className = "dot" + (s.running ? " on" : "");
+        $("srv").textContent = s.running ? `running (pid ${s.pid})` : "stopped";
+      } catch { $("srv").textContent = "unreachable"; }
+    }
+    async function control(path) { await fetch(path, { method: "POST" }); setTimeout(refreshStatus, 600); }
+    $("btnStart").onclick = () => control("/control/start");
+    $("btnStop").onclick = () => control("/control/stop");
+    $("btnReset").onclick = () => control("/control/reset");
+    $("send").onclick = async () => {
+      const text = $("input").value.trim();
+      if (!text) return;
+      $("input").value = "";
+      const r = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, sources: [text], passes: 2 }) });
+      const data = await r.json();
+      const div = document.createElement("div");
+      div.innerHTML = `<strong>Agent</strong><br>${data.draft}<br>` + (data.claims||[]).map(c => `<div>${c.status}: ${c.text}</div>`).join("");
+      $("messages").appendChild(div);
+    };
+    (async () => { await refreshStatus(); const r = await fetch("/control/status"); const s = await r.json(); if (!s.running) await control("/control/start"); setInterval(refreshStatus, 3000); })();
+  </script>
+</body>
+</html>
