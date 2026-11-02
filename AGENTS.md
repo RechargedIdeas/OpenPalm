@@ -1,23 +1,28 @@
 # AGENTS.md — Instructions for the AI Builder
 
-You are building Agent Harness, a desktop AI application for non-technical real estate agents. Read this fully before touching code.
-
-## Reading order
-
-1. This file
-2. PLAN.md
-3. docs/ARCHITECTURE.md
-4. docs/CONVENTIONS.md
-5. TASKS.md (current priorities)
-6. docs/ACCEPTANCE.md
+You are building Agent Harness, a desktop AI application for people who know little or nothing about AI. The audience includes older adults, artists, musicians, small businesses, schools, nonprofits, scientists, and anyone who finds technology difficult. Read this fully before touching code.
 
 ## Core rules
 
-- Verification is not optional. Never let Copy/Send activate while unsupported claims remain.
-- Local first / CPU-only by default. Cloud requires an explicit warned opt-in.
-- No portal scraping. Accept only user-provided CSVs or licensed APIs.
-- Maximum six top-level navigation items.
-- Simplicity is the product. The target user is a licensed agent, not a developer.
+**Simplicity is the product.** Every control must answer: “Would a non-technical person know why they would change this?”
+
+**Verification is not optional.** Never let Copy or Share activate while unsupported claims remain.
+
+**Local first / CPU-only by default.** Cloud requires an explicit, warned opt-in.
+
+**No scraping.** Accept only files, notes, CSVs, or licensed APIs the user already has the right to use.
+
+**Maximum six top-level navigation items.**
+
+## Audience examples
+
+- Musician drafting a press bio from their own notes
+- Teacher summarizing a parent email
+- Nonprofit writing a grant from their program documents
+- Scientist checking a methods paragraph against their lab notes
+- Older adult writing a letter to a doctor or a family member
+
+The verification and privacy rules are the same for every audience.
 
 ## How to run
 
@@ -26,9 +31,3 @@ cd sidecar
 pip install -r requirements.txt
 python3 gui.py
 ```
-
-Server auto-starts if not running. Start / Stop / Reset are in the GUI header.
-
-## Contribution
-
-See CONTRIBUTING.md. Update TASKS.md or add a note in docs/checkpoints/ when you finish work.

@@ -1,25 +1,13 @@
 # CPU-only mode
 
-Agent Harness runs entirely on the CPU. No GPU is required.
+Agent Harness runs entirely on the CPU. No GPU is required. This is intentional: the product must work on ordinary laptops used by older adults, students, small nonprofits, and anyone without a gaming PC.
 
-On machines without a dedicated GPU (including 8 GB Intel iGPU laptops):
-
-- Set `OLLAMA_VULKAN=0` (done automatically by the sidecar on startup).
-- Use a small model such as Phi-4-mini or Qwen3 1.7B.
-- Everything (drafting, verification, RAG search, charts, bots) works; generation is simply slower.
-
-## Verified working path (no GPU)
+- The sidecar sets `OLLAMA_VULKAN=0` on startup.
+- Small models are recommended.
+- Drafting, verification, file search, and charts all work; generation is simply slower.
 
 ```bash
 cd sidecar
 pip install -r requirements.txt
 python3 gui.py
 ```
-
-Or start the server directly:
-
-```bash
-python3 -m uvicorn harness_sidecar.api.server:app --host 127.0.0.1 --port 8765
-```
-
-The GUI header has Start / Stop / Reset. The server auto-starts if it is not already running.
