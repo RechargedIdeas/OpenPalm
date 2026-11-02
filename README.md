@@ -1,7 +1,37 @@
-# This project has a new name: SourceCheck
+# Neighbor
 
-The product is no longer limited to real estate. It is a simple, local AI assistant for everyone.
+Agent software for the people.
 
-**New repository:** https://github.com/RechargedIdeas/sourcecheck
+Neighbor is a simple local assistant for anyone — musicians, artists, small businesses, schools, nonprofits, scientists, older adults, and people who know little or nothing about AI. It runs on a regular computer. No special graphics card is required.
 
-Please use the SourceCheck repository for all future work. It includes the full user manual, detailed examples for musicians, artists, businesses, schools, nonprofits, scientists, and older adults, and the updated agent and contribution guides.
+It helps you write, organize, and check work using the documents and notes you already have. Claims that are not supported by your own sources are flagged before you can copy or share.
+
+## Who it is for
+
+- A musician drafting a bio or a set list from their own notes
+- An artist describing a show from their own records
+- A small business owner summarizing invoices or writing a customer email
+- A teacher preparing a parent note or a lesson summary
+- A nonprofit writing a grant from program documents
+- A scientist drafting a methods paragraph from lab notes
+- An older adult writing a letter to a doctor, a bank, or family
+- Anyone who wants an agent that stays on their computer and speaks plain language
+
+## Quick start
+
+```bash
+cd sidecar
+pip install -r requirements.txt
+python3 gui.py
+```
+
+The helper starts automatically if it is not running. Use Start / Stop / Reset in the header.
+
+## Manual
+
+The complete user manual with detailed examples is in `manual/USER-MANUAL.md`.
+
+## For agents and contributors
+
+- Read `AGENTS.md`
+- See `CONTRIBUTING.md`
