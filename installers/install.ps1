@@ -1,17 +1,17 @@
-# OpenPalm installer for Windows — auto-downloads dependencies.
+# OpenPalm — fully automatic installer for Windows.
+# Clones, installs deps, starts the server, and opens the browser.
 # Usage: irm https://raw.githubusercontent.com/RechargedIdeas/OpenPalm/main/installers/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 $Prefix = "$env:USERPROFILE\.openpalm"
+$Port = 8765
 $NoDeps = $args -contains "--no-deps"
 
-Write-Host "OpenPalm installer (Windows)"
-Write-Host "  prefix: $Prefix"
-
+Write-Host "OpenPalm — automatic install"
 New-Item -ItemType Directory -Force -Path $Prefix | Out-Null
 
 if (-not $NoDeps) {
-  Write-Host "Installing dependencies…"
+  Write-Host "Installing system dependencies…"
   if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     winget install -e --id Python.Python.3.11 --accept-package-agreements --accept-source-agreements
   }
@@ -21,10 +21,8 @@ if (-not $NoDeps) {
 }
 
 if (Test-Path "$Prefix\OpenPalm") {
-  Write-Host "Updating…"
   git -C "$Prefix\OpenPalm" pull --ff-only
 } else {
-  Write-Host "Cloning…"
   git clone --depth 1 https://github.com/RechargedIdeas/OpenPalm.git "$Prefix\OpenPalm"
 }
 
@@ -36,13 +34,18 @@ if (Test-Path requirements.txt) { pip install -q -r requirements.txt } else { pi
 
 $launcher = @"
 @echo off
-cd /d %USERPROFILE%\.openpalm\OpenPalm\sidecar
+cd /d $Prefix\OpenPalm\sidecar
 call .venv\Scripts\activate.bat
 set OPENPALM_CPU_ONLY=1
-python -m uvicorn harness_sidecar.api.server:app --host 127.0.0.1 --port 8765
+python -m uvicorn harness_sidecar.api.server:app --host 127.0.0.1 --port $Port
 "@
 Set-Content -Path "$Prefix\openpalm.bat" -Value $launcher
 
-Write-Host ""
-Write-Host "Installed. Run: $Prefix\openpalm.bat"
-Write-Host "Then open http://127.0.0.1:8765"
+Write-Host "Starting OpenPalm…"
+Start-Process -FilePath "$Prefix\openpalm.bat" -WindowStyle Hidden -RedirectStandardOutput "$Prefix\openpalm.log" -RedirectStandardError "$Prefix\openpalm.err"
+
+Start-Sleep -Seconds 5
+Start-Process "http://127.0.0.1:$Port"
+
+Write-Host "OpenPalm is running at http://127.0.0.1:$Port"
+Write-Host "Log: $Prefix\openpalm.log"
