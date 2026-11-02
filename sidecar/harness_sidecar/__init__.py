@@ -1,1 +1,1 @@
-"""Agent Harness sidecar."""
+"""OpenPalm Python sidecar package."""

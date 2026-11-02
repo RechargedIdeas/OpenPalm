@@ -18,6 +18,7 @@ def extract_claims(draft: str) -> list[str]:
 def ground_claim(claim: str, sources: list[str]) -> tuple[str, str | None]:
     """Return (SUPPORTED|UNSUPPORTED, matching source snippet)."""
     claim_l = claim.lower()
+    # Normalize common number formats
     claim_norm = re.sub(r"[,]", "", claim_l)
     for src in sources:
         src_l = src.lower()
@@ -44,5 +45,6 @@ def verify(draft: str, sources: list[str], passes: int = 2) -> dict[str, Any]:
                 unsupported.append(c)
         if not unsupported:
             break
+        # stub revision: note the unsupported items
         current = current + "\n\n[Revised: removed or flagged unsupported claims.]"
     return {"draft": current, "claims": claims, "passes_run": passes}

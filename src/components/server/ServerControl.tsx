@@ -46,11 +46,24 @@ export function ServerControl() {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-      <span style={{ width: 10, height: 10, borderRadius: "50%", background: running ? "#a6e3a1" : "#585b70" }} />
+      <span
+        style={{
+          width: 10,
+          height: 10,
+          borderRadius: "50%",
+          background: running ? "#a6e3a1" : "#585b70",
+        }}
+      />
       <span>{msg}</span>
-      <button onClick={() => act("/control/start")} disabled={running}>Start</button>
-      <button onClick={() => act("/control/stop")} disabled={!running}>Stop</button>
-      <button onClick={() => act("/control/reset")}>Reset</button>
+      <button onClick={() => act("/control/start")} disabled={running} style={{ fontSize: 12 }}>
+        Start
+      </button>
+      <button onClick={() => act("/control/stop")} disabled={!running} style={{ fontSize: 12 }}>
+        Stop
+      </button>
+      <button onClick={() => act("/control/reset")} style={{ fontSize: 12 }}>
+        Reset
+      </button>
     </div>
   );
 }
